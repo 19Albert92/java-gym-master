@@ -90,7 +90,15 @@ public class TimetableTest {
         timetable.addNewTrainingSession(singleTrainingSession);
 
         //Проверить, что за понедельник в 13:00 вернулось одно занятие
-        //Проверить, что за понедельник в 14:00 не вернулось занятий
-    }
+        int TrainingSessionsCountMonday13 = timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, new TimeOfDay(13, 0)).size();
+        Assertions.assertEquals(1, TrainingSessionsCountMonday13,
+                "Должно было вернуться 1 занятие а вернулось " + TrainingSessionsCountMonday13
+        );
 
+        //Проверить, что за понедельник в 14:00 не вернулось занятий
+        int TrainingSessionsCountMonday14 = timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, new TimeOfDay(14, 0)).size();
+        Assertions.assertEquals(0, TrainingSessionsCountMonday14,
+                "Должно было вернуться 0 занятие а вернулось " + TrainingSessionsCountMonday14
+        );
+    }
 }

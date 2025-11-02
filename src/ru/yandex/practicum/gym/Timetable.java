@@ -38,7 +38,13 @@ public class Timetable {
         return timetable.getOrDefault(dayOfWeek, new TreeMap<>());
     }
 
-    public /* непонятно, что возвращать */ getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
+    public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
+
         //как реализовать, тоже непонятно, но сложность должна быть О(1)
+        TreeMap<TimeOfDay, List<TrainingSession>> trainsByDayOfWeek = timetable.getOrDefault(dayOfWeek, new TreeMap<>());
+
+        if (trainsByDayOfWeek.isEmpty()) return Collections.emptyList();
+
+        return trainsByDayOfWeek.getOrDefault(timeOfDay, new ArrayList<>());
     }
 }

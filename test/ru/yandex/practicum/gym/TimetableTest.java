@@ -19,7 +19,12 @@ public class TimetableTest {
         timetable.addNewTrainingSession(singleTrainingSession);
 
         //Проверить, что за понедельник вернулось одно занятие
+        int sizeTrainingForMonday = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).size();
+        Assertions.assertEquals(1, sizeTrainingForMonday, "Должно было вернуться одно занятие а вернулось " + sizeTrainingForMonday);
+
         //Проверить, что за вторник не вернулось занятий
+        int sizeTrainingForTuesday = timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY).size();
+        Assertions.assertEquals(0, sizeTrainingForTuesday, "Должно было вернуться 0 занятие а вернулось " + sizeTrainingForTuesday);
     }
 
     @Test
@@ -47,8 +52,30 @@ public class TimetableTest {
         timetable.addNewTrainingSession(saturdayChildTrainingSession);
 
         // Проверить, что за понедельник вернулось одно занятие
+        int sizeTrainingForMonday = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY).size();
+        Assertions.assertEquals(1, sizeTrainingForMonday,
+                "Должно было вернуться 1 занятие а вернулось " + sizeTrainingForMonday
+        );
+
         // Проверить, что за четверг вернулось два занятия в правильном порядке: сначала в 13:00, потом в 20:00
+        TreeMap<TimeOfDay, List<TrainingSession>> trainingSessionsForDay = timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY);
+        int sizeTrainingForThursday = trainingSessionsForDay.size();
+        Assertions.assertEquals(2, sizeTrainingForThursday,
+                "Должно было вернуться 2 занятия а вернулось " + sizeTrainingForThursday
+        );
+
+        List<TimeOfDay> expectedTimeDays = List.of(new TimeOfDay(13, 0), new TimeOfDay(20, 0));
+        List<TimeOfDay> actualTimeDays = List.of(trainingSessionsForDay.firstKey(), trainingSessionsForDay.lastKey());
+
+        Assertions.assertEquals(expectedTimeDays, actualTimeDays,
+                "Правильный порядок: сначала в 13:00, потом в 20:00 " + actualTimeDays
+        );
+
         // Проверить, что за вторник не вернулось занятий
+        int sizeTrainingForTuesday = timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY).size();
+        Assertions.assertEquals(0, sizeTrainingForTuesday,
+                "Должно было вернуться 0 занятий а вернулось " + sizeTrainingForTuesday
+        );
     }
 
     @Test

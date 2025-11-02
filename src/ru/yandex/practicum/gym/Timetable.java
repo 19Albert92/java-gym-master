@@ -1,14 +1,10 @@
 package ru.yandex.practicum.gym;
 
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Timetable {
 
-    private Map<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
+    private final Map<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
 
@@ -18,23 +14,24 @@ public class Timetable {
         );
 
         if (trainsOfDay.isEmpty()) {
-            trainsOfDay.put(trainingSession.getTimeOfDay(), List.of(trainingSession));
+            ArrayList<TrainingSession> trainingSessions = new ArrayList<>();
+
+            trainingSessions.add(trainingSession);
+
+            trainsOfDay.put(trainingSession.getTimeOfDay(), trainingSessions);
+
         } else {
-            List<TrainingSession> sessionsByDayOfWeek = trainsOfDay.getOrDefault(
+            List<TrainingSession> sessionsByTimeOfDay = trainsOfDay.getOrDefault(
                     trainingSession.getTimeOfDay(), new ArrayList<>()
             );
-
-            sessionsByTimeOfDay.add(trainingSession);
-
-            trainsOfDay.put(trainingSession.getTimeOfDay(), sessionsByTimeOfDay);
+            trainsOfDay.put(trainingSession.getTimeOfDay(),
+                    getUniqListByCoachWithDateTime(sessionsByTimeOfDay, trainingSession));
         }
 
-        timetable.put(trainingSession.getDayOfWeek, trainsOfDay);
+        timetable.put(trainingSession.getDayOfWeek(), trainsOfDay);
     }
 
     public TreeMap<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-
-        //как реализовать, тоже непонятно, но сложность должна быть О(1)
         return timetable.getOrDefault(dayOfWeek, new TreeMap<>());
     }
 
@@ -45,6 +42,21 @@ public class Timetable {
 
         if (trainsByDayOfWeek.isEmpty()) return Collections.emptyList();
 
-        return trainsByDayOfWeek.getOrDefault(timeOfDay, new ArrayList<>());
+        return trainsByDayOfWeek.getOrDefault(timeOfDay, Collections.emptyList());
+    }
+
+    private List<TrainingSession> getUniqListByCoachWithDateTime(List<TrainingSession> trainsOfTime,
+                                                                 TrainingSession newTrainingSession) {
+        //Не занят ли couch в этот день и это время
+        for (TrainingSession trainingSession : trainsOfTime) {
+            if (trainingSession.getCoach().equals(newTrainingSession.getCoach()) &&
+                    trainingSession.getTimeOfDay().equals(newTrainingSession.getTimeOfDay())) {
+                return trainsOfTime;
+            }
+        }
+
+        trainsOfTime.add(newTrainingSession);
+
+        return trainsOfTime;
     }
 }

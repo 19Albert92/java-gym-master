@@ -6,6 +6,8 @@ public class Timetable {
 
     private final Map<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
 
+    private final List<CounterOfTraining> counterOfTrainingList = new ArrayList<>();
+
     public void addNewTrainingSession(TrainingSession trainingSession) {
 
         //сохраняем занятие в расписании
@@ -14,6 +16,9 @@ public class Timetable {
         );
 
         if (trainsOfDay.isEmpty()) {
+
+            addCounterOfTraining(trainingSession);
+
             ArrayList<TrainingSession> trainingSessions = new ArrayList<>();
 
             trainingSessions.add(trainingSession);
@@ -29,6 +34,31 @@ public class Timetable {
         }
 
         timetable.put(trainingSession.getDayOfWeek(), trainsOfDay);
+    }
+
+    private void addCounterOfTraining(TrainingSession trainingSession) {
+
+        for (CounterOfTraining counterOfTraining : counterOfTrainingList) {
+            if (counterOfTraining.getCoach().equals(trainingSession.getCoach())) {
+                counterOfTraining.plusCount();
+                return;
+            }
+        }
+
+        counterOfTrainingList.add(new CounterOfTraining(trainingSession.getCoach()));
+    }
+
+    public LinkedHashMap<Coach, Integer> getCountByCoaches() {
+
+        LinkedHashMap<Coach, Integer> result = new LinkedHashMap<>();
+
+        Collections.sort(counterOfTrainingList);
+
+        for (CounterOfTraining counterOfTraining : counterOfTrainingList) {
+            result.put(counterOfTraining.getCoach(), counterOfTraining.getCount());
+        }
+
+        return result;
     }
 
     public TreeMap<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
@@ -50,12 +80,15 @@ public class Timetable {
         //Не занят ли couch в этот день и это время
         for (TrainingSession trainingSession : trainsOfTime) {
             if (trainingSession.getCoach().equals(newTrainingSession.getCoach()) &&
+                    trainingSession.getDayOfWeek().equals(newTrainingSession.getDayOfWeek()) &&
                     trainingSession.getTimeOfDay().equals(newTrainingSession.getTimeOfDay())) {
                 return trainsOfTime;
             }
         }
 
         trainsOfTime.add(newTrainingSession);
+
+        addCounterOfTraining(newTrainingSession);
 
         return trainsOfTime;
     }

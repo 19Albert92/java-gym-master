@@ -170,7 +170,9 @@ public class TimetableTest {
         Group group = new Group("Акробатика для детей", Age.CHILD, 60);
         Coach coach = new Coach("Васильев", "Николай", "Сергеевич");
 
-        TrainingSession singleTrainingSession = new TrainingSession(group, coach, DayOfWeek.THURSDAY, new TimeOfDay(13, 0));
+        TrainingSession singleTrainingSession = new TrainingSession(
+                group, coach, DayOfWeek.THURSDAY, new TimeOfDay(13, 0)
+        );
         timetable.addNewTrainingSession(singleTrainingSession);
 
         Assertions.assertEquals(1, timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY).size(),

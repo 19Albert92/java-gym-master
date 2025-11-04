@@ -6,11 +6,10 @@ public class CounterOfTraining implements Comparable<CounterOfTraining> {
 
     private final Coach coach;
 
-    private int count;
+    private int count = 1;
 
     public CounterOfTraining(Coach coach) {
         this.coach = coach;
-        count++;
     }
 
     @Override
